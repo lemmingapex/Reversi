@@ -7,15 +7,9 @@
 using namespace std;
 
 template<typename Reversi>
-void Agent<Reversi>::otherMove(const Action& a) {
-	theGame.play(a);
-}
-
-template<typename Reversi>
-void Agent<Reversi>::playerMove(Action& a) {
-	vector<typename Reversi::Action> actions(theGame.actionBegin(), theGame.actionEnd());
-	a = actions[minMaxAlphaBeta(theGame,0,-999999,999999)];
-	theGame.play(a);
+void Agent<Reversi>::playerMove(Action& a, Reversi& currentGame) {
+	vector<typename Reversi::Action> actions(currentGame.actionBegin(), currentGame.actionEnd());
+	a = actions[minMaxAlphaBeta(currentGame,0,-999999,999999)];
 }
 
 template<typename Reversi>
@@ -48,8 +42,7 @@ int Agent<Reversi>::minMaxAlphaBeta(Reversi& currentGame, unsigned int depth, in
 		else {
 			return alpha;
 		}
-	}
-	else {
+	} else {
 		for(Action iter = currentGame.actionBegin(); iter != currentGame.actionEnd(); iter++) {
 			tempGame = currentGame;
 			tempGame.play(iter);

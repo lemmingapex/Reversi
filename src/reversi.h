@@ -9,13 +9,8 @@ using namespace std;
 class Reversi {
 	public:
 		class Action;
-		static const unsigned int boardSize = 8;
 
-		bitset<boardSize*boardSize> blackPieces;
-		bitset<boardSize*boardSize> whitePieces;
-
-		// white(0) or black(1)
-		bool player;
+		unsigned int boardSize;
 
 		enum square {
 			black=0,
@@ -23,9 +18,22 @@ class Reversi {
 			none=2
 		};
 
+		//square* pieces;
+
+		bitset<64> blackPieces;
+		bitset<64> whitePieces;
+
+
+		// white(0) or black(1)
+		bool player;
+
 		// ctor
 		Reversi() {
-			player=black;
+			boardSize = 8;
+			player = black;
+			//pieces = new square[boardSize*boardSize];
+			//fill_n(pieces, boardSize*boardSize, none);
+
 			setSquare(boardSize/2-1, boardSize/2-1, white);
 			setSquare(boardSize/2, boardSize/2, white);
 			setSquare(boardSize/2, boardSize/2-1, black);
@@ -33,7 +41,8 @@ class Reversi {
 		}
 
 		int score() const {
-			return blackPieces.count() - whitePieces.count();
+			int score = blackPieces.count() - whitePieces.count();
+			return score;
 		}
 
 		void printBoard();
@@ -48,8 +57,6 @@ class Reversi {
 
 		void flipSquares(const Action& a, unsigned int r, unsigned int c);
 };
-
-
 
 class Reversi::Action : public iterator<input_iterator_tag, Reversi::Action> {
 	public:
@@ -70,6 +77,9 @@ class Reversi::Action : public iterator<input_iterator_tag, Reversi::Action> {
 			col=Col;
 		}
 
+		// Iterator constructor
+		explicit Action(const Reversi* _game);
+
 		bool operator == (const Action& R) const {
 			return row == R.row && col == R.col;
 		}
@@ -87,9 +97,11 @@ class Reversi::Action : public iterator<input_iterator_tag, Reversi::Action> {
 		unsigned int getRow() const {
 			return row;
 		}
+
 		unsigned int getCol() const {
 			return col;
 		}
+
 		bool isPass() const {
 			return row == 255 && col == 255;
 		}
@@ -105,9 +117,6 @@ class Reversi::Action : public iterator<input_iterator_tag, Reversi::Action> {
 		void setPass() {
 			row = col = 255;
 		}
-
-		// Iterator constructor
-		explicit Action(const Reversi* _game);
 
 		bool isLegal() const;
 		bool checkSquares(unsigned int rIncr, unsigned int cIncr) const;

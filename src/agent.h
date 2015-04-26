@@ -21,26 +21,16 @@ class Agent {
 
 		string name;
 
-		Agent(bool p) : thePlayer(p) {
+		Agent(bool p, const int& maxd) : thePlayer(p),maxDepth(maxd) {
 			name="my agent at depth " + itos(maxDepth);
 		}
 
-		Agent(bool p, const Reversi& game) : thePlayer(p),theGame(game) {
-			name="my agent at depth " + itos(maxDepth);
-		}
-
-		Agent(bool p, const Reversi& game, const int& maxd) : thePlayer(p),theGame(game),maxDepth(maxd) {
-			name="my agent at depth " + itos(maxDepth);
-		}
-
-		void otherMove(const Action& a);
-		void playerMove(Action& a);
+		void playerMove(Action& a, Reversi& currentGame);
 		int minMaxAlphaBeta(Reversi& currentGame, unsigned int level, int alpha, int beta);
 		int getBestMove(Reversi& currentGame, int level);
 		int heuristic(Reversi& currentGame);
 	private:
 		bool thePlayer;
-		Reversi theGame;
 		unsigned int maxDepth;
 };
 

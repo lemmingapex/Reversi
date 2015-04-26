@@ -13,14 +13,11 @@ class RandomAgent {
 		string name;
 
 		RandomAgent(bool p);
-		RandomAgent(bool p, const Reversi& game);
 
-		void otherMove(const Action& a);
-		void playerMove(Action& a);
+		void playerMove(Action& a, Reversi& currentGame);
 	private:
 		static bool seeded;
 		bool thePlayer;
-		Reversi theGame;
 };
 
 template<typename Reversi>
@@ -36,22 +33,7 @@ RandomAgent<Reversi>::RandomAgent(bool p) : thePlayer(p) {
 }
 
 template<typename Reversi>
-RandomAgent<Reversi>::RandomAgent(bool p, const Reversi& game) : thePlayer(p), theGame(game) {
-	name="random agent";
-	if(!seeded) {
-		srand(time(NULL));
-		seeded = true;
-	}
-}
-
-template<typename Reversi>
-void RandomAgent<Reversi>::otherMove(const Action& a) {
-	theGame.play(a);
-}
-
-template<typename Reversi>
-void RandomAgent<Reversi>::playerMove(Action& a) {
-	vector<typename Reversi::Action> actions(theGame.actionBegin(), theGame.actionEnd());
+void RandomAgent<Reversi>::playerMove(Action& a, Reversi& currentGame) {
+	vector<typename Reversi::Action> actions(currentGame.actionBegin(), currentGame.actionEnd());
 	a = actions[rand()%actions.size()];
-	theGame.play(a);
 }

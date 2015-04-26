@@ -13,7 +13,9 @@ void Reversi::play(const Action& a) {
 	flipSquares(a, 1, 1);
 	flipSquares(a, 0, 1);
 	flipSquares(a,-1, 1);
+
 	flipSquares(a,-1, 0);
+
 	flipSquares(a,-1,-1);
 	flipSquares(a, 0,-1);
 	flipSquares(a, 1,-1);
@@ -68,10 +70,10 @@ void Reversi::flipSquares(const Action& a, unsigned int rIncr, unsigned int cInc
 			col += cIncr;
 			continue;
 		}
-		if ( theSquare == thePlayer ) {
+		if(theSquare == thePlayer) {
 			row -= rIncr;
 			col -= cIncr;
-			while ( row != origRow || col != origCol ) {
+			while(row != origRow || col != origCol) {
 				setSquare(row,col,thePlayer);
 				row -= rIncr;
 				col -= cIncr;
@@ -84,29 +86,24 @@ void Reversi::flipSquares(const Action& a, unsigned int rIncr, unsigned int cInc
 }
 
 Reversi::square Reversi::getSquare(unsigned int r, unsigned int c) const {
-	assert(r < boardSize);
-	assert(c < boardSize);
+	square temp = none;
 	if(blackPieces[r*boardSize + c]) {
-		return black;
+		temp = black;
 	}
 	if(whitePieces[r*boardSize + c]) {
-		return white;
+		temp = white;
 	}
-	return none;
+	return temp;
 }
 
 void Reversi::setSquare(unsigned int r, unsigned int c, square s) {
-	assert(r < boardSize);
-	assert(c < boardSize);
 	if ( s == black ) {
 		blackPieces[r*boardSize + c] = true;
 		whitePieces[r*boardSize + c] = false;
-	}
-	else if ( s == white ) {
+	} else if ( s == white ) {
 		blackPieces[r*boardSize + c] = false;
 		whitePieces[r*boardSize + c] = true;
-	}
-	else {
+	} else {
 		blackPieces[r*boardSize + c] = false;
 		whitePieces[r*boardSize + c] = false;
 	}
@@ -118,13 +115,13 @@ Reversi::Action::Action(const Reversi* _game) :	game(_game), row(0), col(0) {
 	}
 
 	// Action is a pass, or the game is over?
-	if ( *this == _game->actionEnd() ) {
+	if (*this == _game->actionEnd()) {
 		Reversi newGame(*_game);
 		newGame.player = !newGame.player;
 		setRow(0);
 		setCol(0);
 		game = &newGame;
-		if ( !isLegal() ) {
+		if (!isLegal()) {
 			operator++();
 		}
 
@@ -132,10 +129,8 @@ Reversi::Action::Action(const Reversi* _game) :	game(_game), row(0), col(0) {
 		if ( *this == _game->actionEnd() ) {
 			setCol(0);
 			setRow(game->boardSize);
-		}
-
-		// Pass?
-		else {
+		} else {
+			// Pass?
 			setPass();
 		}
 		game = _game;
@@ -190,16 +185,16 @@ bool Reversi::Action::checkSquares(unsigned int rIncr, unsigned int cIncr) const
 	unsigned int row = getRow() + rIncr;
 	unsigned int col = getCol() + cIncr;
 
-	if( row >= boardSize || col >= boardSize ) {
+	if(row < 0 || col < 0 || row >= game->boardSize || col >= game->boardSize) {
 		return false;
 	}
 
 	// If the immediate neighbor is the same?
-	if( game->getSquare(row,col) == thePlayer) {
+	if(game->getSquare(row, col) == thePlayer) {
 		return false;
 	}
 
-	while(row < boardSize && col < boardSize) {
+	while(row < game->boardSize && col < game->boardSize) {
 		square theSquare = game->getSquare(row,col);
 		if(theSquare == otherPlayer) {
 			row += rIncr;
@@ -213,7 +208,6 @@ bool Reversi::Action::checkSquares(unsigned int rIncr, unsigned int cIncr) const
 		// Blank square
 		return false;
 	}
-
 	// Off bounds
 	return false;
 }
